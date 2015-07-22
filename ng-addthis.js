@@ -1,50 +1,66 @@
 angular.module('ng-addthis', ['ng'])
-	.factory('addthis', ['$rootScope', '$window', '$timeout',
-		function($rootScope, $window, $timeout, $q) {
-		    var service = $window.crazyegg = $window.crazyegg || {};
+    .factory('addthis', ['$q', '$window', '$timeout',
+        function ($q, $window, $timeout) {
+            var service = $window.ngAddthis = $window.ngAddthis || {};
 
-			service.removeScript = function() {
-				/** remove previous script **/
-				var element = document.getElementById('addthis-js');
-				if (element) {
-					element.parentNode.removeChild(element);
-				}
+            service.removeScript = function () {
+                var element = document.getElementById('addthis-js');
 
-				return true;
-			}
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
 
+                return true;
+            };
 
-		    service.loadProject = function(key) {
+            service.loadProject = function (key) {
+                var defer = $q.defer();
 
-				if (document.getElementById('addthis-js') || key == void 0) {
-					return;
-				}
+                switch (true) {
 
-				var defer = $q.defer();
+                    case (document.getElementById('addthis-js')):
+                        defer.resolve($window.ngAddthis);
+                        break;
 
-				script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.id = 'addthis-js';
-				script.async = true;
-				script.src = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
-				script.onload = script.onreadystatechange = function () {
-					defer.resolve($window.optimizely);
-				};
+                    case (key == void 0):
+                        defer.reject('no project');
+                        break;
 
-				first = document.getElementsByTagName('script')[0];
-				first.parentNode.insertBefore(script, first);
+                    default :
 
-				return defer.promise;
-			};
+                        var script    = document.createElement('script');
+                        script.type   = 'text/javascript';
+                        script.id     = 'addthis-js';
+                        script.async  = true;
+                        script.src    = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
+                        script.onload = script.onreadystatechange = function () {
+                            defer.resolve($window.optimizely);
+                        };
 
-			service.initAddThis = function(accountKey) {
-				$timeout(function() {
-					$window.crazyegg.loadProject(accountKey);
-				});
+                        var first = document.getElementsByTagName('script')[0];
+                        first.parentNode.insertBefore(script, first);
+                }
 
-				return true;
-			};
+                return defer.promise;
+            };
 
-		    return service;
-		}
-	]);
+            service.initAddThis = function (accountKey) {
+
+                var defer = $q.defer();
+
+                $timeout(function () {
+                    $window.ngAddthis.loadProject(accountKey).then(
+                        function (result) {
+                            defer.resolve(result);
+                        },
+                        function (error) {
+                            defer.resolve(error);
+                        });
+                });
+
+                return defer.promise;
+            };
+
+            return service;
+        }
+    ]);

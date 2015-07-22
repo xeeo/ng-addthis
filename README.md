@@ -42,6 +42,22 @@ app.config(function($stateProvider, addthis) {
 });
 ```
 
+An important aspect is that you might not want to have the AddThis widget on all pages. So that there is a function you can use to remove the script. This can be used on state change for example.
+
+```javascript
+angular.module('app')
+    .run(['$rootScope', 'addthis', function($rootScope, addthis) {
+        $rootScope.$on('$stateChangeStart', 
+            function(event, toState, toParams, fromState, fromParams) { 
+                if (toState.name === 'your-addthis-widget-state') {
+                    addthis.initAddThis('12345678');
+                } else { 
+                    addthis.removeScript();
+                }
+            });
+    }]);
+```
+
 ## Test
 
 I can say TODO ... but I won't do them .... sooooo :)
