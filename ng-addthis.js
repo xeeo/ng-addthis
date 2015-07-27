@@ -1,28 +1,46 @@
 angular.module('ng-addthis', ['ng'])
-    .factory('addthis', ['$q', '$window', '$timeout',
+    .service('addThisService', ['$q', '$window', '$timeout',
         function ($q, $window, $timeout) {
-            var service = $window.ngAddthis = $window.ngAddthis || {};
 
-            service.removeScript = function () {
+            var _this = this;
+
+            this.removeScript = function () {
                 var element = document.getElementById('addthis-js');
 
                 if (element) {
                     element.parentNode.removeChild(element);
                 }
 
+                var divElement = document.getElementById('_atssh'); divElement.parentNode.removeChild(element);
+
+                var divElements = document.getElementsByClassName('addthis-smartlayers');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
+                var divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
+                var divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
                 return true;
             };
 
-            service.loadProject = function (key) {
+            this.loadProject = function (key) {
                 var defer = $q.defer();
 
                 switch (true) {
 
-                    case (document.getElementById('addthis-js')):
-                        defer.resolve($window.ngAddthis);
+                    case ((document.getElementById('addthis-js') != null)):
+                        defer.resolve(addthis);
                         break;
 
-                    case (key == void 0):
+                    case (!key):
                         defer.reject('no project');
                         break;
 
@@ -34,7 +52,7 @@ angular.module('ng-addthis', ['ng'])
                         script.async  = true;
                         script.src    = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
                         script.onload = script.onreadystatechange = function () {
-                            defer.resolve($window.optimizely);
+                            defer.resolve(addthis);
                         };
 
                         var first = document.getElementsByTagName('script')[0];
@@ -44,12 +62,12 @@ angular.module('ng-addthis', ['ng'])
                 return defer.promise;
             };
 
-            service.initAddThis = function (accountKey) {
+            this.initAddThis = function (accountKey) {
 
                 var defer = $q.defer();
 
                 $timeout(function () {
-                    $window.ngAddthis.loadProject(accountKey).then(
+                    _this.loadProject(accountKey).then(
                         function (result) {
                             defer.resolve(result);
                         },
@@ -61,6 +79,5 @@ angular.module('ng-addthis', ['ng'])
                 return defer.promise;
             };
 
-            return service;
         }
     ]);

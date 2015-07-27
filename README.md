@@ -22,20 +22,20 @@ In your app's run block execute the `initAddThis` method:
 
 ```javascript
 angular.module('app')
-    .run(['addthis', function(addthis) {
-        addthis.initAddThis('12345678');
+    .run(['addThisService', function(addThisService) {
+        addThisService.initAddThis('12345678');
     }]);
 ```
 
 Another way to load the library and avoid a FOUC is to use a router like [ui-router](https://github.com/angular-ui/ui-router) that allows you to defer pageload until after all of a given route's dependencies have been loaded. The `loadProject` method returns a promise so you can use it with any give plugin or framework but ui-router is a really good choice for most projects.
 
 ```javascript
-app.config(function($stateProvider, addthis) {
+app.config(function($stateProvider, addThisService) {
   $stateProvider.state('app.dashboard', {
     // ... other stuff ...
     resolve: {
-      addthis: function(addthis) {
-        addthis.loadProject('12345678');
+      addThisService: function(addThisService) {
+        addThisService.loadProject('12345678');
       }
     }
   });
@@ -46,13 +46,13 @@ An important aspect is that you might not want to have the AddThis widget on all
 
 ```javascript
 angular.module('app')
-    .run(['$rootScope', 'addthis', function($rootScope, addthis) {
+    .run(['$rootScope', 'addThisService', function($rootScope, addThisService) {
         $rootScope.$on('$stateChangeStart', 
             function(event, toState, toParams, fromState, fromParams) { 
-                if (toState.name === 'your-addthis-widget-state') {
-                    addthis.initAddThis('12345678');
+                if (toState.name === 'your--state') {
+                    addThisService.initAddThis('12345678');
                 } else { 
-                    addthis.removeScript();
+                    addThisService.removeScript();
                 }
             });
     }]);
