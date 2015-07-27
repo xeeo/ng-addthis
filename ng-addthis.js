@@ -4,14 +4,42 @@ angular.module('ng-addthis', ['ng'])
 
             var _this = this;
 
-            this.showDivs = function() {
+            this.removeScript = function () {
+                var element     = null;
                 var divElements = null;
                 var divElement  = null;
 
-                var element = document.getElementById('addthis-js');
+                element = document.getElementById('addthis-js');
                 if (element) {
                     element.parentNode.removeChild(element);
                 }
+
+                divElement = document.getElementById('_atssh');
+                if (divElement) {
+                    divElement.style.display = "none";
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                while(divElements.length > 0){
+                    divElements[0].parentNode.removeChild(divElements[0]);
+                }
+
+                return true;
+            };
+
+            this.showLayers = function() {
+                var divElements = null;
+                var divElement  = null;
 
                 divElement = document.getElementById('_atssh');
                 if (divElement) {
@@ -36,14 +64,9 @@ angular.module('ng-addthis', ['ng'])
                 return true;
             };
 
-            this.hideDivs = function () {
+            this.hideLayers = function () {
                 var divElements = null;
                 var divElement  = null;
-
-                var element = document.getElementById('addthis-js');
-                if (element) {
-                    element.parentNode.removeChild(element);
-                }
 
                 divElement = document.getElementById('_atssh');
                 if (divElement) {
@@ -74,7 +97,6 @@ angular.module('ng-addthis', ['ng'])
                 switch (true) {
 
                     case ((document.getElementById('addthis-js') != null)):
-                        _this.showDivs();
                         defer.resolve(addthis);
                         break;
 
@@ -89,7 +111,6 @@ angular.module('ng-addthis', ['ng'])
                         script.async  = true;
                         script.src    = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
                         script.onload = script.onreadystatechange = function () {
-                            _this.showDivs();
                             defer.resolve(addthis);
                         };
 
