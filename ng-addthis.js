@@ -7,14 +7,16 @@ angular.module('ng-addthis', ['ng'])
             this.removeScript = function () {
                 var divElements = null;
                 var divElement  = null;
-                var element     = document.getElementById('addthis-js');
 
+                var element = document.getElementById('addthis-js');
                 if (element) {
                     element.parentNode.removeChild(element);
                 }
 
                 divElement = document.getElementById('_atssh');
-                divElement.parentNode.removeChild(divElement);
+                if (divElement) {
+                    divElement.parentNode.removeChild(divElement);
+                }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers');
                 while (divElements.length > 0) {
