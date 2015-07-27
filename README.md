@@ -42,7 +42,7 @@ app.config(function($stateProvider, addThisService) {
 });
 ```
 
-An important aspect is that you might not want to have the AddThis widget on all pages. So that there is a function you can use to remove the script. This can be used on state change for example.
+An important aspect is that you might not want to have the AddThis widget on all pages. So that there is a function you can use to hide the script. This can be used on state change for example.
 
 ```javascript
 angular.module('app')
@@ -50,7 +50,6 @@ angular.module('app')
         $rootScope.$on('$stateChangeStart', 
             function(event, toState, toParams, fromState, fromParams) {
                 addThisService.initAddThis('12345678');
-             
                 if (toState.name === 'your--state') {
                     addThisService.showDivs();       
                 } else { 
