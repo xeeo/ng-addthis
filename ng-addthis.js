@@ -4,7 +4,7 @@ angular.module('ng-addthis', ['ng'])
 
             var _this = this;
 
-            this.removeScript = function () {
+            this.showDivs = function() {
                 var divElements = null;
                 var divElement  = null;
 
@@ -15,22 +15,54 @@ angular.module('ng-addthis', ['ng'])
 
                 divElement = document.getElementById('_atssh');
                 if (divElement) {
-                    divElement.parentNode.removeChild(divElement);
+                    divElement.style.display = "block";
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers');
-                while (divElements.length > 0) {
-                    divElements[0].parentNode.removeChild(divElements[0]);
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "block";
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
-                while (divElements.length > 0) {
-                    divElements[0].parentNode.removeChild(divElements[0]);
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "block";
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
-                while (divElements.length > 0) {
-                    divElements[0].parentNode.removeChild(divElements[0]);
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "block";
+                }
+
+                return true;
+            };
+
+            this.hideDivs = function () {
+                var divElements = null;
+                var divElement  = null;
+
+                var element = document.getElementById('addthis-js');
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
+
+                divElement = document.getElementById('_atssh');
+                if (divElement) {
+                    divElement.style.display = "none";
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers');
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "none";
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "none";
+                }
+
+                divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                for (var i = 0; i < divElements.length; i++) {
+                    divElements[0].style.display = "none";
                 }
 
                 return true;
@@ -42,6 +74,7 @@ angular.module('ng-addthis', ['ng'])
                 switch (true) {
 
                     case ((document.getElementById('addthis-js') != null)):
+                        _this.showDivs();
                         defer.resolve(addthis);
                         break;
 
@@ -50,13 +83,13 @@ angular.module('ng-addthis', ['ng'])
                         break;
 
                     default :
-
                         var script    = document.createElement('script');
                         script.type   = 'text/javascript';
                         script.id     = 'addthis-js';
                         script.async  = true;
                         script.src    = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
                         script.onload = script.onreadystatechange = function () {
+                            _this.showDivs();
                             defer.resolve(addthis);
                         };
 
@@ -77,7 +110,7 @@ angular.module('ng-addthis', ['ng'])
                             defer.resolve(result);
                         },
                         function (error) {
-                            defer.resolve(error);
+                            defer.reject(error);
                         });
                 });
 
