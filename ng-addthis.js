@@ -20,84 +20,104 @@ angular.module('ng-addthis', ['ng'])
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers');
-                while(divElements.length > 0){
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
-                while(divElements.length > 0){
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
                 divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
-                while(divElements.length > 0){
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
                 return true;
             };
 
-            this.showLayers = function() {
-                var divElements = null;
-                var divElement  = null;
+            this.showLayers = function (timeout) {
 
-                divElement = document.getElementById('_atssh');
-                if (divElement) {
-                    divElement.style.display = "block";
+                if (timeout == undefined || isNaN(timeout)) {
+                    timeout = 1000;
                 }
 
-                divElements = document.getElementsByClassName('addthis-smartlayers');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "block";
+                $timeout(function () {
+                    var divElements = null;
+                    var divElement  = null;
+
+                    divElement = document.getElementById('_atssh');
+                    if (divElement) {
+                        divElement.style.display = "block";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "block";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "block";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "block";
+                    }
+
+                    return true;
+                }, timeout);
+            };
+
+            this.hideLayers = function (timeout) {
+
+                if (timeout == undefined || isNaN(timeout)) {
+                    timeout = 550;
                 }
 
-                divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "block";
-                }
+                $timeout(function () {
+                    var divElements = null;
+                    var divElement  = null;
 
-                divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "block";
-                }
+                    divElement = document.getElementById('_atssh');
+                    if (divElement) {
+                        divElement.style.display = "none";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "none";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "none";
+                    }
+
+                    divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                    for (var i = 0; i < divElements.length; i++) {
+                        divElements[0].style.display = "none";
+                    }
+                }, timeout);
 
                 return true;
             };
 
-            this.hideLayers = function () {
-                var divElements = null;
-                var divElement  = null;
-
-                divElement = document.getElementById('_atssh');
-                if (divElement) {
-                    divElement.style.display = "none";
-                }
-
-                divElements = document.getElementsByClassName('addthis-smartlayers');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "none";
-                }
-
-                divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "none";
-                }
-
-                divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
-                for (var i = 0; i < divElements.length; i++) {
-                    divElements[0].style.display = "none";
-                }
-
-                return true;
-            };
-
-            this.loadProject = function (key) {
+            this.loadProject = function (key, hideLayers) {
                 var defer = $q.defer();
 
                 switch (true) {
 
                     case ((document.getElementById('addthis-js') != null)):
-                        defer.resolve(addthis);
+
+                        if (hideLayers) {
+                            _this.hideLayers();
+                        } else {
+                            _this.showLayers();
+                        }
+                        defer.resolve(_this);
                         break;
 
                     case (!key):
@@ -111,7 +131,12 @@ angular.module('ng-addthis', ['ng'])
                         script.async  = true;
                         script.src    = 'https://s7.addthis.com/js/300/addthis_widget.js#pubid=' + key;
                         script.onload = script.onreadystatechange = function () {
-                            defer.resolve(addthis);
+                            if (hideLayers) {
+                                _this.hideLayers();
+                            } else {
+                                _this.showLayers();
+                            }
+                            defer.resolve(_this);
                         };
 
                         var first = document.getElementsByTagName('script')[0];
@@ -121,12 +146,12 @@ angular.module('ng-addthis', ['ng'])
                 return defer.promise;
             };
 
-            this.initAddThis = function (accountKey) {
+            this.initAddThis = function (accountKey, hideLayers) {
 
                 var defer = $q.defer();
 
                 $timeout(function () {
-                    _this.loadProject(accountKey).then(
+                    _this.loadProject(accountKey, hideLayers).then(
                         function (result) {
                             defer.resolve(result);
                         },

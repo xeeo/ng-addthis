@@ -49,11 +49,10 @@ angular.module('app')
     .run(['$rootScope', 'addThisService', function($rootScope, addThisService) {
         $rootScope.$on('$stateChangeStart', 
             function(event, toState, toParams, fromState, fromParams) {
-                addThisService.initAddThis('12345678');
                 if (toState.name === 'your--state') {
-                    addThisService.showDivs();       
-                } else { 
-                    addThisService.hideDivs();
+                    addThisService.loadProject('12345678');
+                } else {
+                    addThisService.hideLayers(0);
                 }
             });
     }]);
