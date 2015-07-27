@@ -5,26 +5,29 @@ angular.module('ng-addthis', ['ng'])
             var _this = this;
 
             this.removeScript = function () {
-                var element = document.getElementById('addthis-js');
+                var divElements = null;
+                var divElement  = null;
+                var element     = document.getElementById('addthis-js');
 
                 if (element) {
                     element.parentNode.removeChild(element);
                 }
 
-                var divElement = document.getElementById('_atssh'); divElement.parentNode.removeChild(element);
+                divElement = document.getElementById('_atssh');
+                divElement.parentNode.removeChild(divElement);
 
-                var divElements = document.getElementsByClassName('addthis-smartlayers');
-                while(divElements.length > 0){
+                divElements = document.getElementsByClassName('addthis-smartlayers');
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
-                var divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
-                while(divElements.length > 0){
+                divElements = document.getElementsByClassName('addthis-smartlayers-desktop');
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
-                var divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
-                while(divElements.length > 0){
+                divElements = document.getElementsByClassName('addthis-smartlayers-mobile');
+                while (divElements.length > 0) {
                     divElements[0].parentNode.removeChild(divElements[0]);
                 }
 
