@@ -48,11 +48,13 @@ An important aspect is that you might not want to have the AddThis widget on all
 angular.module('app')
     .run(['$rootScope', 'addThisService', function($rootScope, addThisService) {
         $rootScope.$on('$stateChangeStart', 
-            function(event, toState, toParams, fromState, fromParams) { 
+            function(event, toState, toParams, fromState, fromParams) {
+                addThisService.initAddThis('12345678');
+             
                 if (toState.name === 'your--state') {
-                    addThisService.initAddThis('12345678');
+                    addThisService.showDivs();       
                 } else { 
-                    addThisService.removeScript();
+                    addThisService.hideDivs();
                 }
             });
     }]);
@@ -60,13 +62,13 @@ angular.module('app')
 
 ## Test
 
-I can say TODO ... but I won't do them .... sooooo :)
+I can say TODO ... but I won't do them .... This thing is already in production so enjoy :D
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Jacopo Tarantino
+Copyright (c) 2014 Geana Raul
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
